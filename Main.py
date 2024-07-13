@@ -19,8 +19,8 @@ class Scrapper:
         soup = BeautifulSoup(self.response.text, 'html.parser')
         try:
             upper = soup.find('div', id='mp-upper')
-            middle = soup.find('div', id='mp-middle')
-            lower = soup.find('div', id='mp-lower')
+            middle = soup.find('div', id='mp-lower')
+            lower = soup.find('div', id='mp-bottom')
         except AttributeError as error:
             print(f'AttributeError: {error}')
         else:
@@ -30,7 +30,9 @@ class Scrapper:
                     for link in featured_article.find_all('a'):
                         self.links.append(self.url + link.get('href'))
                         text = featured_article.text
-                    return text, self.links
+            for a in middle.find_all('a'):
+                self.links.append(self.url + a.get('href'))
+            return self.links
 
     def download(self):
         pass
