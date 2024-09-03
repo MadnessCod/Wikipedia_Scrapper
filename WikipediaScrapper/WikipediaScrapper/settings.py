@@ -6,12 +6,12 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 
 BOT_NAME = "WikipediaScrapper"
 
 SPIDER_MODULES = ["WikipediaScrapper.spiders"]
 NEWSPIDER_MODULE = "WikipediaScrapper.spiders"
-
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "WikipediaScrapper (+http://www.yourdomain.com)"
@@ -62,9 +62,10 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "WikipediaScrapper.pipelines.WikipediascrapperPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    # "WikipediaScrapper.pipelines.WikipediascrapperPipeline": 300,
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -94,8 +95,12 @@ FEED_EXPORT_ENCODING = "utf-8"
 
 # Playwright Settings
 
-DOWNLOAD_HANDLERS = {
-    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-}
+# DOWNLOAD_HANDLERS = {
+#     "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+#     "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+# }
 
+IMAGES_STORE = os.path.join(os.getcwd(), 'Media')
+
+
+IMAGES_URLS_FIELD = 'image_urls'

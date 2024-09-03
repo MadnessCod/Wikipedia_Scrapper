@@ -13,6 +13,7 @@ celery = {extras = ["beat"], version = "^5.4.0"}
 redis = "^5.0.8"
 scrapy = "^2.11.2"
 scrapy-playwright = "^0.0.41"
+pillow = "^10.4.0"
 
 
 [build-system]
