@@ -1,5 +1,4 @@
 import scrapy
-
 from WikipediaScrapper.items import WikipediascrapperItem
 
 
@@ -11,22 +10,15 @@ class WikipediaScrapper(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
-        top_left = response.xpath('//*[@id="mp-left"]')
-        top_right = response.xpath('//*[@id="mp-right"]')
-        top_left_text = top_left.xpath('.//text()').extract()
-        top_left_links = top_left.xpath('.//a/@href').getall()
+        featured_article = response.css('#mp-tfa > p')
+        feature_article_link = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(href)').get()
+        featured_article_title = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(title)').get()
+        featured_article_text = featured_article.css('::text').getall()
 
-        for link in top_left_links:
-            try:
-                yield response.follow(link, callback=self.page_parse)
-            except ValueError:
-                self.log(f'invalid link: {link}')
-
+        for news in response.css('#mp-itn > ul > li'):
+            text = news.css('::text').getall()
+            links = news.css('a::attr(href)').getall()
 
     def page_parse(self, response):
-        page_item = WikipediascrapperItem()
-        if '.jpg' in response.url:
-            debug(f'found an image the url is {response.url}')
-            yield {
-                'image_urls': response.url
-            }
+
+        pass
