@@ -2,6 +2,14 @@ import scrapy
 from WikipediaScrapper.items import WikipediascrapperItem
 
 
+def debug(*msg, separator=True):
+    if separator:
+        print('_' * 40)
+    print(msg)
+    if separator:
+        print('_' * 40)
+
+
 class WikipediaScrapper(scrapy.Spider):
     name = 'wikipedia'
 
@@ -10,6 +18,8 @@ class WikipediaScrapper(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
+
+
         featured_article = response.css('#mp-tfa > p')
         featured_article_img = response.css('#mp-tfa-img > div > span > a > img::attr(src)').get()
         feature_article_link = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(href)').get()
@@ -17,8 +27,9 @@ class WikipediaScrapper(scrapy.Spider):
         featured_article_text = featured_article.css('::text').getall()
 
         for news in response.css('#mp-itn > ul > li'):
-            text = news.css('::text').getall()
-            links = news.css('a::attr(href)').getall()
+            news_items = WikipediascrapperItem()
+            news_items['name'] = news.css('::text').get()
+            news_items['url'] = news.css('a::attr(href)').get()
 
         ongoing_link = response.css('#mp-itn > div:nth-child(4) > div:nth-child(1) > b > a::attr(href)').get()
         for ongoing in response.css('#mp-itn > div:nth-child(4) > div:nth-child(1) > div > ul > li'):
@@ -56,4 +67,5 @@ class WikipediaScrapper(scrapy.Spider):
             links = recently_featured.css('a::attr(href)').getall()
 
     def page_parse(self, response):
-        pass
+        header = response.css('#content > header')
+

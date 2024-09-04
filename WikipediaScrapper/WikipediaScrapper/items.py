@@ -7,7 +7,7 @@ import scrapy
 
 
 class WikipediascrapperItem(scrapy.Item):
-    # define the fields for your item here like:
     name = scrapy.Field()
+    link = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
