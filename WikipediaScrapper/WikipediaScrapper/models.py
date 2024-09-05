@@ -34,3 +34,14 @@ class Article(MyBaseModel):
         on_delete='CASCADE',
         verbose_name='Links',
     )
+
+
+if __name__ == '__main__':
+    try:
+        for model in [Article, URL]:
+            if not model.table_exists():
+                database_manager.create_table(models=[model])
+    except peewee.DatabaseError as error:
+        print(f'Database Error : {error}')
+    finally:
+        database_manager.db.close()
