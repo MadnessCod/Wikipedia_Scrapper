@@ -20,7 +20,7 @@ class WikipediaScrapper(scrapy.Spider):
     def parse(self, response, **kwargs):
         featured_article = response.css('#mp-tfa > p')
         featured_article_img = response.css('#mp-tfa-img > div > span > a > img::attr(src)').get()
-        feature_article_link = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(href)').get()
+        featured_article_link = response.css('#mp-tfa > p > b:nth-child(1) > a::attr(href)').get()
         featured_article_title = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(title)').get()
         featured_article_text = featured_article.css('::text').getall()
 
@@ -44,7 +44,7 @@ class WikipediaScrapper(scrapy.Spider):
         for know in response.css('#mp-dyk > ul > li'):
             know_items = WikipediascrapperItem()
             know_items['name'] = know.css('::text').get()
-            know['link'] = know.css('a::attr(href)').get()
+            know_items['link'] = know.css('a::attr(href)').get()
 
         for event in response.css('#mp-otd > ul > li'):
             event_items = WikipediascrapperItem()
@@ -73,5 +73,5 @@ class WikipediaScrapper(scrapy.Spider):
             recently_featured_items['link'] = recently_featured.css('a::attr(href)').get()
 
     def page_parse(self, response):
-        header = response.css('#content > header').get()
+        header = response.url.rsplit('/', 1)[-1]
         content = response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output')
