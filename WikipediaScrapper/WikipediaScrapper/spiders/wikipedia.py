@@ -24,6 +24,7 @@ class WikipediaScrapper(scrapy.Spider):
         featured_article_title = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(title)').get()
         featured_article_text = featured_article.css('::text').getall()
 
+        yield response.follow(featured_article_link, callback=self.page_parse)
         for news in response.css('#mp-itn > ul > li'):
             news_items = WikipediascrapperItem()
             news_items['name'] = news.css('::text').get()
@@ -75,3 +76,11 @@ class WikipediaScrapper(scrapy.Spider):
     def page_parse(self, response):
         header = response.url.rsplit('/', 1)[-1]
         content = response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output')
+
+        for div in content.css('div'):
+            if div.css('h2'):
+                debug(div.css('h2::text').getall())
+            if div.css('h3'):
+                debug(div.css('h3::text').getall())
+
+
