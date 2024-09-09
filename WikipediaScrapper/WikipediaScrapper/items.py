@@ -11,3 +11,11 @@ class WikipediascrapperItem(scrapy.Item):
     link = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
+
+
+class PageItem(scrapy.Item):
+    title = scrapy.Field()
+    headings = scrapy.Field()
+    paragraphs = scrapy.Field()
+    links = scrapy.Field()
+    images = scrapy.Field()

@@ -77,8 +77,9 @@ class WikipediaScrapper(scrapy.Spider):
         header = response.url.rsplit('/', 1)[-1]
         content = response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output')
 
-        for tr in content.css('table.infobox.vcard > tbody > tr'):
-            debug(tr.css('::text').get())
+        if content.css('table.infobox.vcard > tbody'):
+            for tr in content.css('table.infobox.vcard > tbody > tr'):
+                debug(tr.css('::text').get())
 
         for div in content.css('div'):
             if div.css('h2'):
