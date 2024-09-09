@@ -82,5 +82,9 @@ class WikipediaScrapper(scrapy.Spider):
                 debug(div.css('h2::text').getall())
             if div.css('h3'):
                 debug(div.css('h3::text').getall())
+        for p in content.css('p'):
+            if p.css('::text'):
+                debug(p.css('::text').getall())
+                debug(p.css('a::attr(href)').getall())
 
 
