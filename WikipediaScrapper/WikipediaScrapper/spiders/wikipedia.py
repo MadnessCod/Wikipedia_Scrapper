@@ -14,8 +14,12 @@ class WikipediaScrapper(scrapy.Spider):
     name = 'wikipedia'
 
     def start_requests(self):
-        url = 'https://en.wikipedia.org/wiki/Main_Page'
-        yield scrapy.Request(url=url, callback=self.parse)
+        urls = ['https://en.wikipedia.org/wiki/Main_Page',
+               'https://de.wikipedia.org/wiki/Wikipedia:Hauptseite',
+               ]
+        for url in urls:
+
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
         featured_article = response.css('#mp-tfa > p')
@@ -24,7 +28,6 @@ class WikipediaScrapper(scrapy.Spider):
         featured_article_title = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(title)').get()
         featured_article_text = featured_article.css('::text').getall()
 
-        yield response.follow(featured_article_link[0], callback=self.page_parse)
         for news in response.css('#mp-itn > ul > li'):
             news_items = WikipediascrapperItem()
             news_items['name'] = news.css('::text').get()
