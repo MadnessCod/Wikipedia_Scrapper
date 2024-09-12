@@ -15,10 +15,9 @@ class WikipediaScrapper(scrapy.Spider):
 
     def start_requests(self):
         urls = ['https://en.wikipedia.org/wiki/Main_Page',
-               'https://de.wikipedia.org/wiki/Wikipedia:Hauptseite',
-               ]
+                'https://de.wikipedia.org/wiki/Wikipedia:Hauptseite',
+                ]
         for url in urls:
-
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
