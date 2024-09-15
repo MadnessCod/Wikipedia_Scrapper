@@ -15,7 +15,7 @@ class WikipediaScrapper(scrapy.Spider):
 
     def start_requests(self):
         urls = ['https://en.wikipedia.org/wiki/Main_Page',
-                'https://de.wikipedia.org/wiki/Wikipedia:Hauptseite',
+                # 'https://de.wikipedia.org/wiki/Wikipedia:Hauptseite',
                 ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -23,7 +23,7 @@ class WikipediaScrapper(scrapy.Spider):
     def parse(self, response, **kwargs):
         featured_article = response.css('#mp-tfa > p')
         featured_article_img = response.css('#mp-tfa-img > div > span > a > img::attr(src)').get()
-        featured_article_link = response.css('#mp-tfa a::attr(href)').getall()
+        featured_article_link = response.xpath('//*[@id="mp-tfa"]/p//a/@href').get()
         featured_article_title = response.css('#mp-tfa > p > i:nth-child(1) > b > a::attr(title)').get()
         featured_article_text = featured_article.css('::text').getall()
 
@@ -74,6 +74,7 @@ class WikipediaScrapper(scrapy.Spider):
             recently_featured_items = WikipediascrapperItem()
             recently_featured_items['name'] = recently_featured.css('::text').get()
             recently_featured_items['link'] = recently_featured.css('a::attr(href)').get()
+        yield response.follow(featured_article_link, callback=self.page_parse)
 
     def page_parse(self, response):
         header = response.url.rsplit('/', 1)[-1]
@@ -81,20 +82,21 @@ class WikipediaScrapper(scrapy.Spider):
 
         if content.css('table.infobox.vcard > tbody'):
             for tr in content.css('table.infobox.vcard > tbody > tr'):
-                debug(tr.css('::text').get())
+                debug(tr.css('::text').getall())
+
 
         for figure in content.css('figure'):
-            debug(figure.css('a::attr(href)').get())
+            debug(figure.css('a::attr(href)').getall())
             debug(figure.css('img::attr(src)').get())
-            debug(figure.css('::text').get())
+            debug(figure.css('::text').getall())
 
         for div in content.css('div'):
             if div.css('h2'):
-                debug(div.css('h2::text').get())
+                debug(div.css('h2::text').getall())
             if div.css('h3'):
-                debug(div.css('h3::text').get())
+                debug(div.css('h3::text').getall())
 
         for p in content.css('p'):
             if p.css('::text'):
-                debug(p.css('::text').get())
-                debug(p.css('a::attr(href)').get())
+                debug(p.css('::text').getall())
+                debug(p.css('a::attr(href)').getall())
