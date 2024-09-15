@@ -20,5 +20,14 @@ class WikipediaScrapperContentsSpider(scrapy.Spider):
     def parse(self, response, **kwargs):
         for li in response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(4) > ul > li'):
             yield li.css('a::attr(href)').get()
+
         for li in response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output > div:nth-child(6) > ul > li'):
             yield li.css('a::attr(href)').get()
+
+        for ul in response.css('#mw-content-text > div.mw-content-ltr.mw-parser-output > ul'):
+            links = ul.css('li > a::attr(href)').getall()
+            for link in links:
+                yield response.follow(link, callback=self.parse)
+
+    def page_parse(self, response, **kwargs):
+        debug(response.url)
