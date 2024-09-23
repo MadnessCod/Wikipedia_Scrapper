@@ -10,4 +10,8 @@ class BooksSpider(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
-        pass
+        featured = response.css('#mp-content > div')
+        for div in featured:
+            print(div.css('::text').extract())
+            print(div.css('a::attr(href)').extract())
+

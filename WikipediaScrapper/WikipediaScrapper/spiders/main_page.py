@@ -84,7 +84,6 @@ class WikipediaScrapper(scrapy.Spider):
             for tr in content.css('table.infobox.vcard > tbody > tr'):
                 debug(tr.css('::text').getall())
 
-
         for figure in content.css('figure'):
             debug(figure.css('a::attr(href)').getall())
             debug(figure.css('img::attr(src)').get())
